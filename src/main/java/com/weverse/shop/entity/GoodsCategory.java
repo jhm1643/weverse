@@ -3,11 +3,15 @@ package com.weverse.shop.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.LAZY;
+
+@Entity(name = "werverse_shop_goods_category")
 @Getter
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GoodsCategory {
@@ -16,13 +20,14 @@ public class GoodsCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "상품 카테고리 명")
+    @Column
     private String name;
 
-    @OneToMany(mappedBy = "goodsCategory", cascade = CascadeType.REMOVE)
-    private List<Goods> goodsList;
+    @OneToMany(mappedBy = "goodsCategory", cascade = ALL)
+    private List<Goods> goodsList = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "category_id")
     private Category category;
 
     public static GoodsCategory registration(String name, Category category){
@@ -30,5 +35,9 @@ public class GoodsCategory {
                 .name(name)
                 .category(category)
                 .build();
+    }
+
+    public void addGoods(Goods goods){
+        this.goodsList.add(goods);
     }
 }

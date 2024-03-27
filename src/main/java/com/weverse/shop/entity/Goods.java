@@ -1,10 +1,14 @@
 package com.weverse.shop.entity;
 
-import com.weverse.shop.dto.GoodsRegistrationDto;
+import com.weverse.shop.dto.GoodsRegistrationRecord;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
+import java.time.LocalDateTime;
+
+import static jakarta.persistence.FetchType.LAZY;
+
+@Entity(name = "weverse_shop_goods")
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -15,39 +19,55 @@ public class Goods {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(columnDefinition = "상품 명")
+    @Column
     private String name;
 
-    @Column(columnDefinition = "재고 수량")
+    @Column
     private int stockCount;
 
-    @Column(columnDefinition = "상품 가격")
+    @Column
     private int price;
 
-    @Column(columnDefinition = "구매 가능 수량")
+    @Column
+    private String Artist;
+
+    @Column
     private int purchasePossibleCount;
 
-    @Column(columnDefinition = "판매 공지")
+    @Column
     private String salesNotice;
 
-    @Column(columnDefinition = "상품 설명")
-    private String description;
+    @Column
+    private String descriptionImageUrl;
 
-    @Column(columnDefinition = "상품 고시 정보")
+    @Column
     private String productNoticeInfo;
 
-    @ManyToOne
+    @Column
+    private Boolean isReservationSale;
+
+    @Column
+    private LocalDateTime deliveryStartDueFromDtm;
+
+    @Column
+    private LocalDateTime deliveryStartDueToDtm;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "goods_category_id")
     private GoodsCategory goodsCategory;
 
-    public static Goods registration(GoodsRegistrationDto dto, GoodsCategory goodsCategory){
+    public static Goods registration(GoodsRegistrationRecord record, GoodsCategory goodsCategory){
         return Goods.builder()
-                .name(dto.getName())
-                .stockCount(dto.getStockCount())
-                .price(dto.getPrice())
-                .purchasePossibleCount(dto.getPurchasePossibleCount())
-                .salesNotice(dto.getSalesNotice())
-                .description(dto.getDescription())
-                .productNoticeInfo(dto.getProductNoticeInfo())
+                .name(record.name())
+                .stockCount(record.stockCount())
+                .price(record.price())
+                .purchasePossibleCount(record.purchasePossibleCount())
+                .salesNotice(record.salesNotice())
+                .descriptionImageUrl(record.descriptionImageUrl())
+                .productNoticeInfo(record.productNoticeInfo())
+                .isReservationSale(record.isReservationSale())
+                .deliveryStartDueFromDtm(record.deliveryStartDueFromDtm())
+                .deliveryStartDueToDtm(record.deliveryStartDueToDtm())
                 .goodsCategory(goodsCategory)
                 .build();
     }

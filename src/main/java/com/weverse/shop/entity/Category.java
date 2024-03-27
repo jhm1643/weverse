@@ -3,9 +3,12 @@ package com.weverse.shop.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+import static jakarta.persistence.FetchType.LAZY;
+
+@Entity(name = "weverse_shop_category")
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -16,15 +19,20 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "카테고리 명")
+    @Column
     private String name;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<GoodsCategory> goodsCategories;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "artist_id")
+    private Artist artist;
 
-    public static Category registration(String name){
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<GoodsCategory> goodsCategories  = new ArrayList<>();
+
+    public static Category registration(String name, Artist artist){
         return Category.builder()
                 .name(name)
+                .artist(artist)
                 .build();
     }
 
