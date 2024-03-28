@@ -3,6 +3,9 @@ package com.weverse.shop.entity;
 import com.weverse.shop.dto.GoodsRegistrationRecord;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +16,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicUpdate
 public class Goods {
 
     @Id
@@ -23,16 +27,13 @@ public class Goods {
     private String name;
 
     @Column
-    private int stockCount;
+    private Integer stockCount;
 
     @Column
-    private int price;
+    private Integer price;
 
     @Column
-    private String Artist;
-
-    @Column
-    private int purchasePossibleCount;
+    private Integer purchasePossibleCount;
 
     @Column
     private String salesNotice;
@@ -44,13 +45,25 @@ public class Goods {
     private String productNoticeInfo;
 
     @Column
-    private Boolean isReservationSale;
+    private Boolean reservationSale;
+
+    @Column
+    private Boolean exclusiveSale;
 
     @Column
     private LocalDateTime deliveryStartDueFromDtm;
 
     @Column
     private LocalDateTime deliveryStartDueToDtm;
+
+    @Column
+    private Boolean active;
+
+    @CreationTimestamp
+    private LocalDateTime createAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updateAt;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "goods_category_id")
@@ -65,10 +78,16 @@ public class Goods {
                 .salesNotice(record.salesNotice())
                 .descriptionImageUrl(record.descriptionImageUrl())
                 .productNoticeInfo(record.productNoticeInfo())
-                .isReservationSale(record.isReservationSale())
+                .reservationSale(record.isReservationSale())
+                .exclusiveSale(record.isExclusiveSale())
                 .deliveryStartDueFromDtm(record.deliveryStartDueFromDtm())
                 .deliveryStartDueToDtm(record.deliveryStartDueToDtm())
                 .goodsCategory(goodsCategory)
+                .active(true)
                 .build();
+    }
+
+    public void modifyActive(boolean active){
+        this.active = active;
     }
 }

@@ -1,6 +1,7 @@
 package com.weverse.shop.controller;
 
 import com.weverse.shop.dto.request.CategoryRegistrationRequest;
+import com.weverse.shop.dto.response.CategoryResponse;
 import com.weverse.shop.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,9 +23,19 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/v1/category")
-    public ResponseEntity<Void> removeCategory(){
+    @GetMapping("/v1/category/{categoryId}")
+    public ResponseEntity<CategoryResponse> findCategory(
+            @PathVariable("categoryId") Long categoryId
+    ){
+        return ResponseEntity.ok(categoryService.findById(categoryId));
+    }
 
+    @PutMapping("/v1/category/{categoryId}/active/{active}")
+    public ResponseEntity<Void> removeCategory(
+            @PathVariable("categoryId") Long categoryId,
+            @PathVariable("active") Boolean active
+    ){
+        categoryService.modifyActive(categoryId, active);
         return ResponseEntity.ok().build();
     }
 }

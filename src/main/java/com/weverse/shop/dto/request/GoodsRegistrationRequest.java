@@ -11,6 +11,7 @@ public record GoodsRegistrationRequest(
         String salesNotice,
         String descriptionImageUrl,
         String productNoticeInfo,
+        Boolean isExclusiveSale,
         Boolean isReservationSale,
         LocalDateTime deliveryStartDueFromDtm,
         LocalDateTime deliveryStartDueToDtm

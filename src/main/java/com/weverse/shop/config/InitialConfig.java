@@ -1,11 +1,15 @@
 package com.weverse.shop.config;
 
 import com.weverse.shop.dto.request.CategoryRegistrationRequest;
+import com.weverse.shop.dto.request.GoodsCategoryRegistrationRequest;
+import com.weverse.shop.dto.request.GoodsRegistrationRequest;
 import com.weverse.shop.repository.ArtistRepository;
 import com.weverse.shop.repository.CategoryRepository;
+import com.weverse.shop.repository.GoodsCategoryRepository;
 import com.weverse.shop.service.ArtistService;
 import com.weverse.shop.service.CategoryService;
 import com.weverse.shop.service.GoodsCategoryService;
+import com.weverse.shop.service.GoodsService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -17,10 +21,12 @@ public class InitialConfig {
 
     private final ArtistRepository artistRepository;
     private final CategoryRepository categoryRepository;
+    private final GoodsCategoryRepository goodsCategoryRepository;
 
     private final ArtistService artistService;
     private final CategoryService categoryService;
     private final GoodsCategoryService goodsCategoryService;
+    private final GoodsService goodsService;
 
     @PostConstruct
     @Transactional
@@ -45,7 +51,31 @@ public class InitialConfig {
         //상품 카테고리 데이터 셋
         var categories = categoryRepository.findAll();
         for (int i = 0; i < categories.size(); i++) {
-            goodsCategoryService.registration(categories.get(i).getId(), "goodsCategory" + (i+1));
+            goodsCategoryService.registration(
+                    new GoodsCategoryRegistrationRequest(
+                            categories.get(i).getId(),
+                            "goodsCategory" + (i+1)
+                    )
+            );
+        }
+
+        //상품 데이터 셋
+        var goodsCategories = goodsCategoryRepository.findAll();
+        for (int i = 0; i < goodsCategories.size(); i++) {
+            goodsService.registration(new GoodsRegistrationRequest(
+                    goodsCategories.get(i).getId(),
+                    "goods" + (i+1),
+                    100,
+                    1000+i,
+                    1,
+                    "판매 공지!!",
+                    "test.jpg",
+                    "{" + "\"test\"" + "}",
+                    false,
+                    false,
+                    null,
+                    null
+            ));
         }
     }
 }

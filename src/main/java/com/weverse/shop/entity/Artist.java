@@ -2,7 +2,11 @@ package com.weverse.shop.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +16,7 @@ import java.util.List;
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicUpdate
 public class Artist {
 
     @Id
@@ -21,13 +26,27 @@ public class Artist {
     @Column
     private String name;
 
-    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL)
+    @Column
+    private Boolean active;
+
+    @CreationTimestamp
+    private LocalDateTime createAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updateAt;
+
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.PERSIST)
     private List<Category> categories  = new ArrayList<>();
 
     public static Artist registration(String name){
         return Artist.builder()
                 .name(name)
+                .active(true)
                 .build();
+    }
+
+    public void modifyActive(boolean active){
+        this.active = active;
     }
 
     public void addCategory(Category category){

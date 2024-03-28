@@ -23,11 +23,12 @@ public class GoodsController {
         return ResponseEntity.status(CREATED).build();
     }
 
-    @DeleteMapping("/v1/goods/{goodsId}")
-    public ResponseEntity<Void> removeGoods(
-            @PathVariable("goodsId") Long goodsId
+    @PutMapping("/v1/goods/{goodsId}/active/{active}")
+    public ResponseEntity<Void> modifyActive(
+            @PathVariable("goodsId") Long goodsId,
+            @PathVariable("active") Boolean active
     ){
-        goodsService.remove(goodsId);
+        goodsService.modifyActive(goodsId, active);
         return ResponseEntity.ok().build();
     }
 }

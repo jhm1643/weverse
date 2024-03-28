@@ -1,5 +1,6 @@
 package com.weverse.shop.service;
 
+import com.weverse.shop.dto.request.GoodsCategoryRegistrationRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +12,12 @@ public class GoodsCategoryServiceTest {
     GoodsCategoryService goodsCategoryService;
 
     @Test
-    void test(){
-        goodsCategoryService.registration(1L, "test");
+    void 상품_카테고리_등록(){
+        goodsCategoryService.registration(
+                new GoodsCategoryRegistrationRequest(
+                        1L,
+                        "test입니다."
+                )
+        );
     }
 }

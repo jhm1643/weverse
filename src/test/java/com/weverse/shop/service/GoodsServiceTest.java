@@ -23,6 +23,7 @@ public class GoodsServiceTest {
                 "test.jpg",
                 "{" + "\"test\"" + "}",
                 false,
+                false,
                 null,
                 null
         ));
