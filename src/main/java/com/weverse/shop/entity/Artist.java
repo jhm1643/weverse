@@ -52,4 +52,8 @@ public class Artist {
     public void addCategory(Category category){
         this.categories.add(category);
     }
+
+    public void idReset(){
+        this.id = null;
+    }
 }

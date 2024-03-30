@@ -1,12 +1,8 @@
 package com.weverse.shop.external;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.service.annotation.HttpExchange;
 
-@Component
-@RequiredArgsConstructor
-public class AgifyClient {
+@HttpExchange
+public interface AgifyClient {
 
-    private final RestTemplate template;
 }

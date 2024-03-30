@@ -30,3 +30,7 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
 
+external:
+  api:
+    agify:
+      url: https://api.agify.io

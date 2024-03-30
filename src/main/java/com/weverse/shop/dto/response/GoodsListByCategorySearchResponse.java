@@ -6,10 +6,11 @@ import java.util.List;
 public record GoodsListByCategorySearchResponse(
         List<Category> categories
 ) {
-    public static record Category(
-            String categoryName
+    public record Category(
+            String categoryName,
+            List<Goods> goodsList
     ){
-        public static record Goods(
+        public record Goods(
                 Long id,
                 String name,
                 Integer stockCount,
@@ -18,8 +19,8 @@ public record GoodsListByCategorySearchResponse(
                 String salesNotice,
                 String descriptionImageUrl,
                 String productNoticeInfo,
-                Boolean reservationSale,
-                Boolean exclusiveSale,
+                Boolean isReservationSale,
+                Boolean isExclusiveSale,
                 LocalDateTime deliveryStartDueFromDtm,
                 LocalDateTime deliveryStartDueToDtm,
                 LocalDateTime createAt,

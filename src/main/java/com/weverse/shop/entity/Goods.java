@@ -45,10 +45,10 @@ public class Goods {
     private String productNoticeInfo;
 
     @Column
-    private Boolean reservationSale;
+    private Boolean isReservationSale;
 
     @Column
-    private Boolean exclusiveSale;
+    private Boolean isExclusiveSale;
 
     @Column
     private LocalDateTime deliveryStartDueFromDtm;
@@ -57,7 +57,7 @@ public class Goods {
     private LocalDateTime deliveryStartDueToDtm;
 
     @Column
-    private Boolean active;
+    private Boolean isActive;
 
     @CreationTimestamp
     private LocalDateTime createAt;
@@ -78,16 +78,16 @@ public class Goods {
                 .salesNotice(record.salesNotice())
                 .descriptionImageUrl(record.descriptionImageUrl())
                 .productNoticeInfo(record.productNoticeInfo())
-                .reservationSale(record.isReservationSale())
-                .exclusiveSale(record.isExclusiveSale())
+                .isReservationSale(record.isReservationSale())
+                .isExclusiveSale(record.isExclusiveSale())
                 .deliveryStartDueFromDtm(record.deliveryStartDueFromDtm())
                 .deliveryStartDueToDtm(record.deliveryStartDueToDtm())
                 .goodsCategory(goodsCategory)
-                .active(true)
+                .isActive(true)
                 .build();
     }
 
     public void modifyActive(boolean active){
-        this.active = active;
+        this.isActive = active;
     }
 }
