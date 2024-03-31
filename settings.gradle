@@ -1,1 +1,5 @@
 rootProject.name = 'weverse'
+include 'module-application'
+include 'module-domain'
+include 'module-external'
+include 'module-common'
