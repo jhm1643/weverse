@@ -1,8 +1,9 @@
 위버스 컴퍼니 과제
 
-1. version 
+1. 기본 정보 
    1. spring boot : 3.2.4 
    2. java : 17
+   3. build tool : gradle
 
 2. module 구성 
    1. module-application (api 및 공통 기능 정의)
@@ -15,3 +16,5 @@
    2. h2-console : http://localhost:8080/h2-console
       1. ![image](https://github.com/jhm1643/weverse/assets/40678477/c1907f2d-9de5-4370-b062-bb2d9febadfd)
 
+4. jar 생성 방법
+   1. gradle bootJar 실행 시 module-application/build/libs 경로에 jar 생성
