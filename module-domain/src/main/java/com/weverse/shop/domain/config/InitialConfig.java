@@ -1,11 +1,10 @@
 package com.weverse.shop.domain.config;
 
-import com.weverse.shop.common.dto.request.CategoryRegistrationRequest;
-import com.weverse.shop.common.dto.request.GoodsCategoryRegistrationRequest;
-import com.weverse.shop.common.dto.request.GoodsRegistrationRequest;
+import com.weverse.shop.common.dto.request.CategoryCreateRequest;
+import com.weverse.shop.common.dto.request.GoodsCategoryCreateRequest;
+import com.weverse.shop.common.dto.request.GoodsCreateRequest;
 import com.weverse.shop.common.type.LanguageType;
 import com.weverse.shop.domain.repository.ArtistRepository;
-import com.weverse.shop.domain.repository.CategoryRepository;
 import com.weverse.shop.domain.repository.GoodsCategoryRepository;
 import com.weverse.shop.domain.service.ArtistService;
 import com.weverse.shop.domain.service.CategoryService;
@@ -23,7 +22,6 @@ import java.util.List;
 public class InitialConfig {
 
     private final ArtistRepository artistRepository;
-    private final CategoryRepository categoryRepository;
     private final GoodsCategoryRepository goodsCategoryRepository;
 
     private final ArtistService artistService;
@@ -34,61 +32,52 @@ public class InitialConfig {
     @PostConstruct
     @Transactional
     public void initialDataSetting(){
-        for (int i = 1; i <= 3; i++) {
-            //아티스트 데이터 셋
-            var artistName = "artist" + i;
-            artistService.registration(artistName);
+        //아티스트 데이터 셋
+        var artistName = "bts";
+        artistService.registration(artistName);
 
-            //카테고리 데이터 셋
-            artistRepository.findByName(artistName)
-                            .ifPresent(artist -> {
-                                categoryService.registration(new CategoryRegistrationRequest(artist.getId(), "merch"));
-                                categoryService.registration(new CategoryRegistrationRequest(artist.getId(), "album"));
-                                categoryService.registration(new CategoryRegistrationRequest(artist.getId(), "book"));
-                                categoryService.registration(new CategoryRegistrationRequest(artist.getId(), "membership"));
-                                categoryService.registration(new CategoryRegistrationRequest(artist.getId(), "weverse"));
-                            });
-
-        }
+        //카테고리 데이터 셋
+        artistRepository.findByName(artistName)
+                .ifPresent(artist -> {
+                    categoryService.createCategory(new CategoryCreateRequest(artist.getId(), "merch"));
+                    categoryService.createCategory(new CategoryCreateRequest(artist.getId(), "album"));
+                    categoryService.createCategory(new CategoryCreateRequest(artist.getId(), "book"));
+                    categoryService.createCategory(new CategoryCreateRequest(artist.getId(), "membership"));
+                    categoryService.createCategory(new CategoryCreateRequest(artist.getId(), "weverse"));
+                });
 
         //상품 카테고리 데이터 셋
-        var categories = categoryRepository.findAll();
-        for (int i = 0; i < categories.size(); i++) {
-            for (int j = 0; j < 5; j++) {
-                goodsCategoryService.registration(
-                        new GoodsCategoryRegistrationRequest(
-                                categories.get(i).getId(),
-                                "goodsCategory" + ((i * 5) + (j + 1))
-                        )
-                );
-            }
-        }
+        goodsCategoryService.registration(
+                new GoodsCategoryCreateRequest("goodsCategory")
+        );
 
         //상품 데이터 셋
-        var goodsCategories = goodsCategoryRepository.findAll();
-        for (int i = 0; i < goodsCategories.size(); i++) {
-            for (int j = 0; j < 20; j++) {
-                var goodsRegistrationRequest = new GoodsRegistrationRequest(
-                        goodsCategories.get(i).getId(),
-                        List.of(
-                                new GoodsRegistrationRequest.GoodsNameMultilingual(LanguageType.DEFAULT, "기본 상품명" + ((i * 20) + (j + 1))),
-                                new GoodsRegistrationRequest.GoodsNameMultilingual(LanguageType.EN, "영어 상품명" + ((i * 20) + (j + 1))),
-                                new GoodsRegistrationRequest.GoodsNameMultilingual(LanguageType.KO, "한국어 상품명" + ((i * 20) + (j + 1))),
-                                new GoodsRegistrationRequest.GoodsNameMultilingual(LanguageType.JA, "일본어 상품명" + ((i * 20) + (j + 1)))
-                        ),
-                        j == 19 ? 0 : 100,
-                        1000 + i,
-                        1,
-                        "판매 공지!!",
-                        "test.jpg",
-                        "{" + "\"test\"" + "}",
-                        false,
-                        false,
-                        null,
-                        null
-                );
-                goodsService.registration(goodsRegistrationRequest);
-            }
-        }
+        goodsCategoryRepository.findAll()
+                .forEach(goodsCategory -> {
+                    for (int i = 1; i <= 20; i++) {
+                        var goodsCreateRequest = new GoodsCreateRequest(
+                                goodsCategory.getId(),
+                                List.of(
+                                        new GoodsCreateRequest.GoodsNameMultilingual(LanguageType.DEFAULT, "기본 상품명" + i),
+                                        new GoodsCreateRequest.GoodsNameMultilingual(LanguageType.EN, "영어 상품명" + i),
+                                        new GoodsCreateRequest.GoodsNameMultilingual(LanguageType.KO, "한국어 상품명" + i),
+                                        new GoodsCreateRequest.GoodsNameMultilingual(LanguageType.JA, "일본어 상품명" + i)
+                                ),
+                                i == 1 ? 0 : 1, //첫번 째 상품은 품절로 등록
+                                1000 + i,
+                                1,
+                                "판매 공지!!",
+                                "test.jpg",
+                                "{" + "\"test\"" + "}",
+                                false,
+                                false,
+                                null,
+                                null
+                        );
+                        goodsService.createGoods(goodsCreateRequest);
+                    }
+                });
+
+        //
     }
 }

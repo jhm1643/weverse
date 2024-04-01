@@ -8,7 +8,6 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.NOT_REQUIR
 
 @Schema(description = "상품 검색 요청")
 public record GoodsSearchRequest(
-
         @Schema(description = "상품 명", requiredMode = NOT_REQUIRED)
         String goodsName,
 

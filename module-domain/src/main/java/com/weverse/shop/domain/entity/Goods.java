@@ -1,6 +1,6 @@
 package com.weverse.shop.domain.entity;
 
-import com.weverse.shop.domain.dto.GoodsRegistrationRecord;
+import com.weverse.shop.domain.dto.GoodsCreateRecord;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,7 +13,7 @@ import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
 
-@Entity(name = "weverse_shop_goods")
+@Entity(name = "WEVERSE_SHOP_GOODS")
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -59,20 +59,20 @@ public class Goods {
     @Column
     private LocalDateTime deliveryStartDueToDtm;
 
-    @Column
-    private Boolean isActive;
-
     @CreationTimestamp
     private LocalDateTime createAt;
 
     @UpdateTimestamp
     private LocalDateTime updateAt;
 
+    @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CategoryGoodsMapping> categoryGoodsMappings;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "goods_category_id")
     private GoodsCategory goodsCategory;
 
-    public static Goods registration(GoodsRegistrationRecord record, GoodsCategory goodsCategory){
+    public static Goods create(GoodsCreateRecord record, GoodsCategory goodsCategory){
         return builder()
                 .stockCount(record.stockCount())
                 .price(record.price())
@@ -85,15 +85,28 @@ public class Goods {
                 .deliveryStartDueFromDtm(record.deliveryStartDueFromDtm())
                 .deliveryStartDueToDtm(record.deliveryStartDueToDtm())
                 .goodsCategory(goodsCategory)
-                .isActive(true)
                 .build();
     }
 
-    public void addGoodsName(GoodsNameMultilingual goodsName){
+    public void mappingGoodsCategory(GoodsCategory goodsCategory){
+        this.goodsCategory = goodsCategory;
+    }
+
+    public void releaseMappingGoodsCategory(){
+        this.goodsCategory = null;
+    }
+
+    public void addGoodsNameMultilingual(GoodsNameMultilingual goodsName){
         this.goodsNames.add(goodsName);
     }
 
     public void decreaseStockCount(){
-        this.stockCount--;
+        if(this.stockCount > 0) {
+            this.stockCount--;
+        }
+    }
+
+    public void addCategoryGoodsMapping(CategoryGoodsMapping categoryGoodsMapping){
+        this.categoryGoodsMappings.add(categoryGoodsMapping);
     }
 }

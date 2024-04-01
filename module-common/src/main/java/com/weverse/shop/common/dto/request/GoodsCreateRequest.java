@@ -6,8 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Schema(description = "상품 등록 요청")
-public record GoodsRegistrationRequest(
+@Schema(description = "상품 생성 요청")
+public record GoodsCreateRequest(
         @Schema(description = "상품 카테고리 ID") Long goodsCategoryId,
         @Schema(description = "상품 명 다국어 목록") List<GoodsNameMultilingual> goodsNames,
         @Schema(description = "재고 수량") Integer stockCount,

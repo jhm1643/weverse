@@ -1,6 +1,6 @@
 package com.weverse.shop.controller;
 
-import com.weverse.shop.common.dto.request.GoodsCategoryRegistrationRequest;
+import com.weverse.shop.common.dto.request.GoodsCategoryCreateRequest;
 import com.weverse.shop.common.dto.response.GoodsCategoryResponse;
 import com.weverse.shop.domain.service.GoodsCategoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/weverse/shop")
 @RequiredArgsConstructor
-@Tag(name = "Goods Category API")
+@Tag(name = "상품 카테고리 API")
 public class GoodsCategoryController {
 
     private final GoodsCategoryService goodsCategoryService;
@@ -22,7 +22,7 @@ public class GoodsCategoryController {
     @Operation(summary = "상품 카테고리 등록")
     @PostMapping("/v1/goods-category")
     public ResponseEntity<Void> registrationGoodsCategory(
-            @RequestBody GoodsCategoryRegistrationRequest request
+            @RequestBody GoodsCategoryCreateRequest request
     ){
         goodsCategoryService.registration(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();

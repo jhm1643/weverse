@@ -12,7 +12,7 @@ import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
 
-@Entity(name = "weverse_shop_category")
+@Entity(name = "WEVERSE_SHOP_CATEGORY")
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -37,11 +37,11 @@ public class Category {
     @JoinColumn(name = "artist_id")
     private Artist artist;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<GoodsCategory> goodsCategories  = new ArrayList<>();
+    private List<CategoryGoodsMapping> categoryGoodsMappings  = new ArrayList<>();
 
-    public static Category registration(String name, Artist artist){
+    public static Category create(String name, Artist artist){
         return builder()
                 .name(name)
                 .artist(artist)
@@ -52,7 +52,7 @@ public class Category {
         this.name = name;
     }
 
-    public void addGoodsCategory(GoodsCategory goodsCategory){
-        this.goodsCategories.add(goodsCategory);
+    public void addCategoryGoodsMapping(CategoryGoodsMapping categoryGoodsMapping){
+        this.categoryGoodsMappings.add(categoryGoodsMapping);
     }
 }

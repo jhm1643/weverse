@@ -1,6 +1,6 @@
 package com.weverse.shop.domain.service;
 
-import com.weverse.shop.common.dto.request.GoodsRegistrationRequest;
+import com.weverse.shop.common.dto.request.GoodsCreateRequest;
 import com.weverse.shop.common.dto.response.GoodsResponse;
 import com.weverse.shop.domain.entity.Goods;
 import com.weverse.shop.domain.entity.GoodsNameMultilingual;
@@ -23,33 +23,41 @@ public class GoodsService {
 
     private final GoodsMapper goodsMapper;
 
-    public void registration(GoodsRegistrationRequest request){
+    public void createGoods(GoodsCreateRequest request){
         goodsCategoryRepository.findById(request.goodsCategoryId())
                 .ifPresent(goodsCategory -> {
-                    var goods = Goods.registration(goodsMapper.toGoodsRegistrationRecord(request), goodsCategory);
+                    var goods = Goods.create(goodsMapper.toGoodsCreateRecord(request), goodsCategory);
                     request.goodsNames()
-                            .forEach(e -> goods.addGoodsName(GoodsNameMultilingual.create(goods, e.languageType(), e.goodsName())));
+                            .forEach(e -> goods.addGoodsNameMultilingual(GoodsNameMultilingual.create(goods, e.languageType(), e.goodsName())));
                     goodsCategory.addGoods(goods);
                 });
     }
 
-    public GoodsResponse findGoods(Long id){
-        return goodsMapper.toGoodsResponse(goodsRepository.findById(id)
+    public GoodsResponse findGoods(Long goodsId){
+        return goodsMapper.toGoodsResponse(goodsRepository.findById(goodsId)
                 .orElseThrow(NoSuchElementException::new));
     }
 
-    public int findStockCount(Long id){
-        var goods = goodsRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    public int findStockCount(Long goodsId){
+        var goods = goodsRepository.findById(goodsId).orElseThrow(NoSuchElementException::new);
         return goods.getStockCount();
     }
 
-    public void decreaseStockCount(Long id){
-        goodsRepository.findById(id)
+    public void decreaseStockCount(Long goodsId){
+        goodsRepository.findById(goodsId)
                 .ifPresent(Goods::decreaseStockCount);
     }
 
-    public void remove(Long id){
-        goodsRepository.findById(id)
+    public void remove(Long goodsId){
+        goodsRepository.findById(goodsId)
                 .ifPresent(goodsRepository::delete);
+    }
+
+    public void mappingGoodsCategory(Long goodsCategoryId, Long goodsId){
+        goodsRepository.findById(goodsId)
+                .ifPresent(goods ->
+                        goodsCategoryRepository.findById(goodsCategoryId)
+                                .ifPresent(goods::mappingGoodsCategory)
+                );
     }
 }

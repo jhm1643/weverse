@@ -1,6 +1,6 @@
 package com.weverse.shop.domain.service;
 
-import com.weverse.shop.common.dto.request.CategoryRegistrationRequest;
+import com.weverse.shop.common.dto.request.CategoryCreateRequest;
 import com.weverse.shop.common.dto.response.CategoryResponse;
 import com.weverse.shop.domain.entity.Category;
 import com.weverse.shop.domain.mapper.CategoryMapper;
@@ -10,28 +10,43 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.NoSuchElementException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class CategoryService {
 
+    private final CategoryCacheService categoryCacheService;
     private final ArtistRepository artistRepository;
     private final CategoryRepository categoryRepository;
 
     private final CategoryMapper categoryMapper;
 
-    public CategoryResponse findById(Long id){
-        return categoryMapper.toCategoryResponse(
-                categoryRepository.findById(id).orElseThrow(NoSuchElementException::new)
+    public List<CategoryResponse> findAllCategory(){
+        var categories = categoryRepository.findAll();
+
+        var countByCategoryResponses = categoryCacheService.countByCategoryResponse(
+                categories.stream()
+                        .map(category -> category.getName())
+                        .collect(Collectors.toList())
         );
+
+       return categories.stream()
+                .map(category ->
+                        categoryMapper.toCategoryResponse(category, countByCategoryResponses.stream()
+                                .filter(countByCategoryResponse -> countByCategoryResponse.name().equals(category.getName()))
+                                .findAny()
+                                .orElse(null)
+                        )
+                ).collect(Collectors.toList());
     }
 
-    public void registration(CategoryRegistrationRequest request){
+    public void createCategory(CategoryCreateRequest request){
         artistRepository.findById(request.artistId())
                         .ifPresent(artist -> artist.addCategory(
-                                Category.registration(request.categoryName(), artist)
+                                Category.create(request.categoryName(), artist)
                         ));
     }
 

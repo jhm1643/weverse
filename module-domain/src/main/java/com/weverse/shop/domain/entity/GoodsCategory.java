@@ -11,9 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.PERSIST;
-import static jakarta.persistence.FetchType.LAZY;
 
-@Entity(name = "werverse_shop_goods_category")
+@Entity(name = "WEVERSE_SHOP_GOODS_CATEGORY")
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -28,9 +27,6 @@ public class GoodsCategory {
     @Column
     private String name;
 
-    @Column
-    private Boolean isActive;
-
     @CreationTimestamp
     private LocalDateTime createAt;
 
@@ -41,15 +37,9 @@ public class GoodsCategory {
     @Builder.Default
     private List<Goods> goodsList = new ArrayList<>();
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
-
-    public static GoodsCategory registration(String name, Category category){
+    public static GoodsCategory registration(String name){
         return builder()
                 .name(name)
-                .category(category)
-                .isActive(true)
                 .build();
     }
 

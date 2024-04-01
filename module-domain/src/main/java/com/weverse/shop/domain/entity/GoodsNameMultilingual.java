@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "GOODS_NAME_MULTILINGUAL")
+@Table(name = "WEVERSE_SHOP_GOODS_NAME_MULTILINGUAL")
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

@@ -2,7 +2,7 @@ package com.weverse.shop.domain.dto;
 
 import java.time.LocalDateTime;
 
-public record GoodsRegistrationRecord(
+public record GoodsCreateRecord(
         Integer stockCount,
         Integer price,
         Integer purchasePossibleCount,

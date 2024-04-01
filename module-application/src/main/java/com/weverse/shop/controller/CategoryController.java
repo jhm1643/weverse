@@ -1,6 +1,6 @@
 package com.weverse.shop.controller;
 
-import com.weverse.shop.common.dto.request.CategoryRegistrationRequest;
+import com.weverse.shop.common.dto.request.CategoryCreateRequest;
 import com.weverse.shop.common.dto.response.CategoryResponse;
 import com.weverse.shop.domain.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,10 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/weverse/shop")
 @RequiredArgsConstructor
-@Tag(name = "Category API")
+@Tag(name = "카테고리 API")
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -22,19 +24,16 @@ public class CategoryController {
     @Operation(summary = "카테고리 등록")
     @PostMapping("/v1/category")
     public ResponseEntity<Void> registrationCategory(
-            @RequestBody CategoryRegistrationRequest request
+            @RequestBody CategoryCreateRequest request
     ){
-        categoryService.registration(request);
+        categoryService.createCategory(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @Operation(summary = "카테고리 조회")
-    @GetMapping("/v1/category/{categoryId}")
-    public ResponseEntity<CategoryResponse> findCategory(
-            @Schema(description = "카테고리 ID")
-            @PathVariable("categoryId") Long categoryId
-    ){
-        return ResponseEntity.ok(categoryService.findById(categoryId));
+    @Operation(summary = "카테고리 목록 조회")
+    @GetMapping("/v1/category")
+    public ResponseEntity<List<CategoryResponse>> findAllCategory(){
+        return ResponseEntity.ok(categoryService.findAllCategory());
     }
 
     @Operation(summary = "카테고리 삭제")

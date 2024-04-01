@@ -10,16 +10,16 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Schema(description = "페이지 요청", requiredMode = REQUIRED)
 public record PaginationRequest(
-        @Schema(description = "페이지 번호")
+        @Schema(description = "페이지 번호", defaultValue = "1")
         @Min(value = 1, message = "페이지 번호의 최소 값은 1입니다.")
         Integer pageNo,
 
-        @Schema(description = "페이지 사이즈")
+        @Schema(description = "페이지 사이즈", defaultValue = "10")
         @Min(value = 10, message = "페이지 사이즈의 최소 값은 10 입니다.")
-        @Max(value = 100, message = "페이지 사이즈의 최대 값은 10 입니다.")
+        @Max(value = 100, message = "페이지 사이즈의 최대 값은 100 입니다.")
         Integer pageSize,
 
-        @Schema(description = "페이지네이션 유형")
+        @Schema(description = "페이지네이션 유형", defaultValue = "PAGE")
         @NotNull(message = "페이지네이션 유형 값은 필수 입니다.")
         PaginationType paginationType
 ) {

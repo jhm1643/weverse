@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public record CategoryResponse(
         @Schema(description = "카테고리 ID") Long id,
         @Schema(description = "카테고리 명") String name,
+        @Schema(description = "count") Long count,
         @Schema(description = "생성 일시") LocalDateTime createAt,
         @Schema(description = "수정 일시") LocalDateTime updateAt
 ) {}

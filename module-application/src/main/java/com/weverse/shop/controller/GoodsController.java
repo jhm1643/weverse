@@ -1,6 +1,6 @@
 package com.weverse.shop.controller;
 
-import com.weverse.shop.common.dto.request.GoodsRegistrationRequest;
+import com.weverse.shop.common.dto.request.GoodsCreateRequest;
 import com.weverse.shop.common.dto.response.GoodsResponse;
 import com.weverse.shop.domain.service.GoodsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,17 +15,17 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RestController
 @RequestMapping("/weverse/shop")
 @RequiredArgsConstructor
-@Tag(name = "Goods API")
+@Tag(name = "상품 API")
 public class GoodsController {
 
     private final GoodsService goodsService;
 
-    @Operation(summary = "상품 등록")
+    @Operation(summary = "상품 생성")
     @PostMapping("/v1/goods")
-    public ResponseEntity<Void> registrationGoods(
-            @RequestBody GoodsRegistrationRequest request
+    public ResponseEntity<Void> createGoods(
+            @RequestBody GoodsCreateRequest request
     ){
-        goodsService.registration(request);
+        goodsService.createGoods(request);
         return ResponseEntity.status(CREATED).build();
     }
 
@@ -46,7 +46,6 @@ public class GoodsController {
     ){
         return ResponseEntity.ok(goodsService.findStockCount(goodsId));
     }
-
 
     @Operation(summary = "상품 재고 차감")
     @PutMapping("/v1/goods/{goodsId}")

@@ -13,10 +13,12 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 import static com.weverse.shop.domain.entity.QCategory.category;
+import static com.weverse.shop.domain.entity.QCategoryGoodsMapping.categoryGoodsMapping;
 import static com.weverse.shop.domain.entity.QGoods.goods;
 import static com.weverse.shop.domain.entity.QGoodsCategory.goodsCategory;
 import static com.weverse.shop.domain.entity.QGoodsNameMultilingual.goodsNameMultilingual;
 import static org.apache.commons.lang3.ObjectUtils.anyNotNull;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 @Repository
 @RequiredArgsConstructor
@@ -24,7 +26,7 @@ public class GoodsSearchQuerydsl {
 
     private final JPAQueryFactory queryFactory;
 
-    public Slice<GoodsSearchRecord> searchGoods(PaginationRecord paginationRecord, GoodsSearchRequest goodsSearchRequest){
+    public Slice<GoodsSearchRecord> searchGoodsByCategoryId(Long categoryId, PaginationRecord paginationRecord, GoodsSearchRequest goodsSearchRequest){
         var content = queryFactory
                 .select(
                         Projections.constructor(
@@ -48,12 +50,15 @@ public class GoodsSearchQuerydsl {
                                 goods.createAt,
                                 goods.updateAt
                 ))
-                .from(goods)
+                .from(categoryGoodsMapping)
+                .innerJoin(category).on(category.eq(categoryGoodsMapping.category))
+                .innerJoin(goods).on(goods.eq(categoryGoodsMapping.goods))
                 .innerJoin(goodsNameMultilingual).on(goodsNameMultilingual.id.goodsId.eq(goods.id)
                         .and(goodsNameMultilingual.id.languageType.eq(goodsSearchRequest.languageType())))
-                .innerJoin(goodsCategory).on(goodsCategory.eq(goods.goodsCategory))
-                .innerJoin(category).on(goodsCategory.category.eq(category))
-                .where(goodsConditionProvider(goodsSearchRequest))
+                .leftJoin(goodsCategory).on(goodsCategory.eq(goods.goodsCategory))
+                .where(category.id.eq(categoryId)
+                        .and(goodsConditionProvider(goodsSearchRequest))
+                )
                 .offset(paginationRecord.getOffset())
                 .limit(paginationRecord.getLimit())
                 .fetch();
@@ -70,7 +75,8 @@ public class GoodsSearchQuerydsl {
 
     public BooleanBuilder goodsConditionProvider(GoodsSearchRequest request){
         var booleanBuilder = new BooleanBuilder();
-        if(anyNotNull(request.goodsName())){
+
+        if(isNotEmpty(request.goodsName())){
             booleanBuilder.and(goodsNameMultilingual.name.eq(request.goodsName()));
         }
         if(anyNotNull(request.goodsPrice())){
