@@ -35,7 +35,7 @@ public class GoodsSearchController {
         return ResponseEntity.ok(goodsSearchService.searchGoodsByCategoryId(categoryId));
     }
 
-    @Operation(summary = "카테고리 별 상품 목록 검색")
+    @Operation(summary = "카테고리 별 상품 목록 조회 V2")
     @GetMapping("/v2/search/category/{categoryId}/goods")
     public ResponseEntity<GoodsSearchResponse> searchCategory(
             @Schema(description = "카테고리 ID")
